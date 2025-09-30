@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+@font-face {
+    font-family: 'Anurati';
+    src: url('Anurati-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.whole {
+    width: 1366px;
+    height: 766px;
+    position: relative; 
+    overflow: hidden;
+}
+
+#video-background {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1; 
+    object-fit: cover;}
+    
+.apps {
+    text-align: center;
+position: absolute;
+right: 0;
+margin-right: 200px;
+bottom: 105px;
+z-index: 2;
+}
+  .container {
+margin: 50px;
+padding: 10px;
+width: 350px;
+height: 600px;
+position: absolute;
+right: 0;
+background-color: rgba(255, 255, 255, 0.2); 
+backdrop-filter: blur(10px);
+border-radius: 4%;
+box-sizing: border-box; 
+} 
+
+.container img {
+  max-width: 40px;
+  height: auto;
+  margin: 15px;
+}
+
+.date-container {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+}
+.a {
+    font-size: 6vw; /* Large size for the day */
+    line-height: 1; /* Adjust line height to prevent extra space */
+    /* Ensure all caps is handled by text-transform in CSS */
+    text-transform: uppercase;
+      font-family: 'Anurati'; 
+    bottom: 30px;
+    left: 20px; 
+}
+
+.b {
+    font-size: 2vw; /* Smaller size for the date */
+    align-self: flex-end; /* Puts the date on the bottom right */
+    margin-top: 0px; /* Pull the date up closer to the day */
+    /* Ensure lower case is handled by text-transform in CSS */
+    text-transform: lowercase;
+    bottom: 0px;
+    left: 15px;
+}
+
+#audioControls {
+    position: absolute;
+    bottom: 20px;
+    right: 55px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+}
+
+#playPauseButton {
+    background-color: transparent;
+    border: 2px solid #333;
+    color: #333;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#playPauseButton:hover {
+    background-color: #333;
+    color: rgba(255, 255, 255, 0.2); 
+backdrop-filter: blur(10px);
+}
+
+/* --- Modified Progress Bar Styling for Pink Line --- */
+
+#progressBar {
+    width: 270px;
+    height: 5px; /* The visible height of the track */
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent; /* Essential for gradients to show */
+    padding: 0; /* Remove any default padding that might affect gradient */
+    margin: 0; /* Remove any default margin */
+}
+
+/* Base track styling (the empty part of the bar) */
+#progressBar::-webkit-slider-runnable-track {
+    height: 5px; /* Adjust height to match the overall bar height */
+background: rgba(255, 255, 255, 0.2); 
+backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 3px;
+    /* This will be overwritten by the JavaScript-driven background,
+       but provides a fallback */
+}
+
+/* Style the thumb (the scrubber/handle) - We're making it invisible */
+#progressBar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 0; /* Make the thumb completely invisible */
+    width: 0;
+    background: transparent; /* Ensure it's transparent */
+    border: none; /* No border */
+    cursor: pointer;
+    /* To ensure seeking still works, a tiny invisible area can sometimes help,
+       but mostly, we'll rely on the track for clicks. */
+}
+
+/* For Firefox: Base track styling 
+#progressBar::-moz-range-track {
+    height: 5px;
+    background: #ccc;
+    border: none;
+    border-radius: 3px;
+}
+
+#progressBar::-moz-range-thumb {
+    height: 0;
+    width: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}*/
+
+/* --- JavaScript will dynamically update the background-image of the progress bar
+       to create the pink fill effect.
+       The initial background for the track will be a placeholder. --- */
+</style>
+</head>
+<body>
+<div class="whole">
+<div class="date-container">
+        <div class="a"><span id="day-display"></span></div>
+        <div class="b"><span id="date-display"></span></div>
+    </div>
+
+    <div class="apps">
+<span style="font-family: 'Comic Sans MS', cursive;" ><h1>Apps</h1></span>
+    </div>
+<div class="container"> <!--
+<a href="https://chatgpt.com/"><img src="chat.png"></a>
+<a href="https://drive.google.com/drive/home"><img src="driv.png" ></a>
+<a href="https://www.google.com/"><img src="goo.png"></a>
+<a href="about:blank"><img src="home.png"></a>
+<a href="https://www.instagram.com/"><img src="insta.png"></a>
+<a href="https://za.pinterest.com/"><img src="pin.png"></a>
+<a href="https://www.reddit.com/"><img src="red.png"></a>
+<a href="https://web.whatsapp.com/"><img src="what.png"></a>
+<a href="https://www.youtube.com/"><img src="you.png"></a> -->
+</div>
+    <audio id="audioPlayer" src="sabrina.mp3"></audio>
+
+    <div id="audioControls">
+        <button id="playPauseButton">▶</button>
+        
+        <input type="range" id="progressBar" value="0" min="0" max="100" step="0.1">
+    </div>
+    <video autoplay muted loop id="video-background">
+        <source src="sabrina.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+<script src="script.js"></script>
+</body>
+</html style="width: 1366px; height: 766;">
